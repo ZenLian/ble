@@ -2,13 +2,35 @@
  * ObjectManagerClient
  */
 
-#include "Manager.hpp"
+#include "ble/Manager.hpp"
 
 #include <algorithm>
 #include <gio/gio.h>
 #include <vector>
 
 using namespace ble;
+
+namespace
+{
+    void on_object_added(
+        GDBusObjectManager *self,
+        GDBusObject *object,
+        gpointer user_data)
+    {
+        g_print("== call %s\n", __func__);
+        g_print("object: %s\n", g_dbus_object_get_object_path(object));
+        g_print("interfaces:\n");
+
+        GList *interfaces = g_dbus_object_get_interfaces(object);
+        for (GList *l = interfaces; l != NULL; l = l->next)
+        {
+            GDBusProxy *interface = G_DBUS_PROXY(l->data);
+            g_print("  %s\n", g_dbus_proxy_get_interface_name(interface));
+        }
+        g_list_free_full(interfaces, g_object_unref);
+    }
+
+}
 
 Manager *Manager::get()
 {
@@ -34,20 +56,21 @@ Manager::Manager()
     }
     this->manager_ = object_manager;
 
+    g_signal_connect(manager_, "object-added", G_CALLBACK(on_object_added), this);
+
+    this->loop_ = g_main_loop_new(NULL, FALSE);
+
 out:
     // TODO: exception
     // throw std::exception();
     return;
 }
 
-void Manager::initObjects()
+void Manager::initAdapters()
 {
     GList *objs;
 
     // g_print("Object manager at %s\n", g_dbus_object_manager_get_object_path(manager_));
-
-    std::vector<GDBusProxy *> adapter_proxies;
-    std::vector<GDBusProxy *> device_proxies;
 
     objs = g_dbus_object_manager_get_objects(manager_);
     for (GList *obj_item = objs; obj_item != NULL; obj_item = obj_item->next)
@@ -55,6 +78,7 @@ void Manager::initObjects()
         GDBusObject *obj = (GDBusObject *)(obj_item->data);
         // g_print("%s\n", g_dbus_object_get_object_path(obj));
 
+        // 遍历 object 上的接口
         GList *ifaces = g_dbus_object_get_interfaces(obj);
         for (GList *iface_item = ifaces; iface_item != NULL; iface_item = iface_item->next)
         {
@@ -64,20 +88,22 @@ void Manager::initObjects()
             if (g_str_equal(name, "org.bluez.Adapter1"))
             {
                 // 保存到 Adapters
-                g_object_ref(interface);
-                adapter_proxies.push_back(interface);
-            }
-            if (g_str_equal(name, "org.bluez.Device1"))
-            {
-                // 保存到 Devices
-                g_object_ref(interface);
-                device_proxies.push_back(interface);
+                addAdapter(obj);
             }
         }
         g_list_free_full(ifaces, g_object_unref);
     }
     g_list_free_full(objs, g_object_unref);
+}
 
-    // TODO: addAdapters foreach adapter_proxies
-    std::for_each(adapter_proxies.begin(), adapter_proxies.end(), []() -> {});
+void Manager::run()
+{
+    g_print("running manager mainloop...");
+    g_main_loop_run(this->loop_);
+}
+
+void Manager::addAdapter(GDBusObject *adapter_proxy)
+{
+    auto adapter = std::make_shared<Adapter>(adapter_proxy);
+    this->adapters_.push_back(adapter);
 }

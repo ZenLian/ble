@@ -1,2 +1,5 @@
-add_executable(test1 test1.cpp)
-add_test(NAME test1 COMMAND test1)
+add_executable(example_object_manager example_object_manager.cpp)
+add_test(NAME example_object_manager COMMAND example_object_manager)
+
+add_executable(example_proxy example_proxy.cpp)
+add_test(NAME example_proxy COMMAND example_proxy)

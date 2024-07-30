@@ -1,4 +1,9 @@
+#include "Adapter.hpp"
+
 #include <gio/gio.h>
+
+#include <vector>
+#include <memory>
 
 namespace ble
 {
@@ -12,10 +17,15 @@ namespace ble
         Manager &operator=(Manager &&) = delete;
         Manager *get();
 
+        void run();
+        void addAdapter(GDBusObject *adapter_proxy);
+
     private:
         Manager();
-        void initObjects();
+        void initAdapters();
 
+        GMainLoop *loop_;
         GDBusObjectManager *manager_;
+        std::vector<std::shared_ptr<Adapter>> adapters_;
     };
 }

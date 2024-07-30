@@ -104,7 +104,6 @@ int main()
     GError *error = NULL;
     GDBusObjectManager *manager = NULL;
     GMainLoop *loop = NULL;
-    g_print("hello\n");
 
     loop = g_main_loop_new(NULL, FALSE);
 
