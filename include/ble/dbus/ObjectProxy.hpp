@@ -19,7 +19,9 @@ namespace ble
         virtual ~ObjectProxy();
 
         void InitProxy(GDBusObjectProxy *proxy);
-        void AddChild(GDBusObjectProxy *proxy);
+        void AddChild(std::shared_ptr<ObjectProxy> proxy);
+
+        std::string GetObjectPath();
 
     protected:
         void onChildCreated(const std::string &path);

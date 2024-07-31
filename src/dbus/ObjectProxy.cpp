@@ -45,12 +45,11 @@ void ObjectProxy::InitProxy(GDBusObjectProxy *proxy)
     g_print("[InitProxy] over.\n");
 }
 
-void ObjectProxy::AddChild(GDBusObjectProxy *proxy)
+void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
 {
-    std::string path(g_dbus_object_get_object_path(G_DBUS_OBJECT(proxy)));
-
+    std::string path(proxy->_path);
     // 不属于本结点，不予处理
-    if (!PathUtils::IsDescendantOf(path, this->_path))
+    if (!PathUtils::IsDescendantOf(path, _path))
     {
         g_print("skip %s\n", path.c_str());
         return;
@@ -60,16 +59,15 @@ void ObjectProxy::AddChild(GDBusObjectProxy *proxy)
     if (_children.find(path) != _children.end())
     {
         g_print("InitProxy for %s\n", path.c_str());
-        _children[path]->InitProxy(proxy);
+        _children[path]->InitProxy(proxy->_proxy);
         return;
     }
 
-    // 是子结点，创建子结点并用 proxy 初始化
+    // 是直接子结点，创建子结点并用 proxy 初始化
     if (PathUtils::IsChildOf(path, this->_path))
     {
         g_print("new child %s\n", path.c_str());
-        auto child = std::make_shared<ObjectProxy>(proxy);
-        _children[path] = child;
+        _children[path] = proxy;
         onChildCreated(path);
         return;
     }
