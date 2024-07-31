@@ -1,3 +1,5 @@
+#pragma once
+#include "ble/dbus/ObjectProxy.hpp"
 #include <gio/gio.h>
 
 namespace ble
@@ -8,8 +10,13 @@ namespace ble
         Bluez();
         virtual ~Bluez();
 
+        void Run();
+
     private:
+        void initObjects();
+
         GDBusObjectManager *_manager;
+        ObjectProxy *_rootProxy;
         GMainLoop *_loop;
     };
 }

@@ -1,0 +1,1 @@
+add_library(blecpp dbus/InterfaceProxy.cpp dbus/ObjectProxy.cpp bluez/Bluez.cpp)

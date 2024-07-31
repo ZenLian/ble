@@ -1,4 +1,4 @@
-#include "Adapter.hpp"
+#pragma once
 
 #include <gio/gio.h>
 
@@ -18,14 +18,12 @@ namespace ble
         Manager *get();
 
         void run();
-        void addAdapter(GDBusObject *adapter_proxy);
 
     private:
         Manager();
-        void initAdapters();
 
         GMainLoop *loop_;
         GDBusObjectManager *manager_;
-        std::vector<std::shared_ptr<Adapter>> adapters_;
+
     };
 }

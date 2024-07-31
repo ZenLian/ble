@@ -1,3 +1,5 @@
+#pragma once
+
 #include <gio/gio.h>
 
 #include <vector>
