@@ -1,6 +1,6 @@
 #pragma once
-#include "ble/dbus/ObjectProxy.hpp"
 #include "ble/dbus/ObjectManager.hpp"
+#include "ble/dbus/ObjectProxy.hpp"
 #include <gio/gio.h>
 
 namespace ble
@@ -15,6 +15,7 @@ namespace ble
 
     private:
         void initObjects();
+        void printObjects();
 
         ObjectManager _manager;
         ObjectProxy _rootProxy;

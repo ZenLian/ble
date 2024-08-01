@@ -2,10 +2,11 @@
 
 #include "ble/dbus/ObjectProxy.hpp"
 
+#include <functional>
 #include <gio/gio.h>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace ble
 {
@@ -17,6 +18,14 @@ namespace ble
 
         // INTERFACES
         std::vector<std::shared_ptr<ObjectProxy>> GetManagedObjects();
+
+        using ObjectAddedCallback = std::function<void(std::shared_ptr<ObjectProxy>)>;
+        using ObjectRemovedCallback = std::function<void(std::shared_ptr<ObjectProxy>)>;
+        ObjectAddedCallback OnObjectAdded;
+        ObjectRemovedCallback OnObjectRemoved;
+
+        void handleObjectAdded(GDBusObject *object);
+        void handleObjectRemoved(GDBusObject *object);
 
     private:
         GDBusObjectManager *_manager;

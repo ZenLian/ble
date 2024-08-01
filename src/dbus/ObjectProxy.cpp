@@ -14,35 +14,44 @@ ObjectProxy::ObjectProxy(const std::string &path)
 
 ObjectProxy::ObjectProxy(GDBusObjectProxy *proxy)
 {
-    InitProxy(proxy);
+    loadProxy(proxy);
 }
 
 ObjectProxy::~ObjectProxy()
 {
-    if (_proxy != nullptr)
-        g_object_unref(_proxy);
+    unloadProxy();
 }
 
-void ObjectProxy::InitProxy(GDBusObjectProxy *proxy)
+void ObjectProxy::loadProxy(GDBusObjectProxy *proxy)
 {
+    g_object_ref(proxy);
+    unloadProxy();
     _proxy = proxy;
-    g_object_ref(_proxy);
 
     _path = g_dbus_object_get_object_path(G_DBUS_OBJECT(_proxy));
-    g_print("[InitProxy] path: %s\n", _path.c_str());
+    g_print("[loadProxy] path: %s\n", _path.c_str());
 
     // 获取所有接口
-    g_print("[InitProxy] getting interfaces...\n");
-    GList *interfaces = g_dbus_object_get_interfaces(G_DBUS_OBJECT(_proxy));
-    for (GList *item = interfaces; item != NULL; item = item->next)
+    // g_print("[InitProxy] getting interfaces...\n");
+    // GList *interfaces = g_dbus_object_get_interfaces(G_DBUS_OBJECT(_proxy));
+    // for (GList *item = interfaces; item != NULL; item = item->next)
+    // {
+    //     GDBusProxy *interface = G_DBUS_PROXY(item->data);
+    //     std::string name(g_dbus_proxy_get_interface_name(interface));
+    //     g_print("- %s\n", name.c_str());
+    //     _interfaces[name] = std::make_shared<InterfaceProxy>(interface);
+    // }
+    // g_list_free_full(interfaces, g_object_unref);
+    // g_print("[InitProxy] over.\n");
+}
+
+void ObjectProxy::unloadProxy()
+{
+    if (_proxy != nullptr)
     {
-        GDBusProxy *interface = G_DBUS_PROXY(item->data);
-        std::string name(g_dbus_proxy_get_interface_name(interface));
-        g_print("- %s\n", name.c_str());
-        _interfaces[name] = std::make_shared<InterfaceProxy>(interface);
+        g_object_unref(_proxy);
+        _proxy = nullptr;
     }
-    g_list_free_full(interfaces, g_object_unref);
-    g_print("[InitProxy] over.\n");
 }
 
 void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
@@ -58,8 +67,9 @@ void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
     // 已存在子结点，重新初始化 proxy
     if (_children.find(path) != _children.end())
     {
+        // TODO: 这里可能会重复初始化
         g_print("InitProxy for %s\n", path.c_str());
-        _children[path]->InitProxy(proxy->_proxy);
+        _children[path]->loadProxy(proxy->_proxy);
         return;
     }
 
@@ -97,7 +107,25 @@ void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
     }
 }
 
+std::string ObjectProxy::GetObjectPath()
+{
+    return _path;
+}
+
 void ObjectProxy::onChildCreated(const std::string &path)
 {
     g_print("[NEW] %s\n", path.c_str());
+}
+
+void ObjectProxy::Print()
+{
+    g_print("%s\n", this->_path.c_str());
+    for (auto interface : this->_interfaces)
+    {
+        g_print("  %s\n", interface.first.c_str());
+    }
+    for (auto child : this->_children)
+    {
+        child.second->Print();
+    }
 }

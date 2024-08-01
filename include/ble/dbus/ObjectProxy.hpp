@@ -5,9 +5,9 @@
 #include <gio/gio.h>
 
 #include <map>
-#include <string>
 #include <memory>
 #include <mutex>
+#include <string>
 
 namespace ble
 {
@@ -18,12 +18,15 @@ namespace ble
         ObjectProxy(GDBusObjectProxy *proxy);
         virtual ~ObjectProxy();
 
-        void InitProxy(GDBusObjectProxy *proxy);
         void AddChild(std::shared_ptr<ObjectProxy> proxy);
 
         std::string GetObjectPath();
 
+        void Print();
+
     protected:
+        void loadProxy(GDBusObjectProxy *proxy);
+        void unloadProxy();
         void onChildCreated(const std::string &path);
 
         // 封装的 GDBusObjectProxy
