@@ -5,20 +5,20 @@
 
 namespace ble
 {
-    class Bluez
-    {
-    public:
-        Bluez();
-        virtual ~Bluez();
+class Bluez
+{
+public:
+    Bluez();
+    virtual ~Bluez();
 
-        void Run();
+    void Run();
 
-    private:
-        void initObjects();
-        void printObjects();
+private:
+    void initObjects();
+    void printObjects();
 
-        DBusObjectManager _manager;
-        DBusObjectProxy _rootProxy;
-        GMainLoop *_loop;
-    };
+    ObjectManager _manager;
+    ObjectProxy _rootProxy;
+    GMainLoop* _loop;
+};
 }
