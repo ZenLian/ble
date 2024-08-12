@@ -17,8 +17,8 @@ namespace ble
         void initObjects();
         void printObjects();
 
-        ObjectManager _manager;
-        ObjectProxy _rootProxy;
+        DBusObjectManager _manager;
+        DBusObjectProxy _rootProxy;
         GMainLoop *_loop;
     };
 }

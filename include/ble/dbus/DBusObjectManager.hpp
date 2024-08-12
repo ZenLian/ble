@@ -10,17 +10,17 @@
 
 namespace ble
 {
-    class ObjectManager
+    class DBusObjectManager
     {
     public:
-        ObjectManager(const std::string &name, const std::string &path);
-        virtual ~ObjectManager();
+        DBusObjectManager(const std::string &name, const std::string &path);
+        virtual ~DBusObjectManager();
 
         // INTERFACES
-        std::vector<std::shared_ptr<ObjectProxy>> GetManagedObjects();
+        std::vector<std::shared_ptr<DBusObjectProxy>> GetManagedObjects();
 
-        using ObjectAddedCallback = std::function<void(std::shared_ptr<ObjectProxy>)>;
-        using ObjectRemovedCallback = std::function<void(std::shared_ptr<ObjectProxy>)>;
+        using ObjectAddedCallback = std::function<void(std::shared_ptr<DBusObjectProxy>)>;
+        using ObjectRemovedCallback = std::function<void(std::shared_ptr<DBusObjectProxy>)>;
         ObjectAddedCallback OnObjectAdded;
         ObjectRemovedCallback OnObjectRemoved;
 

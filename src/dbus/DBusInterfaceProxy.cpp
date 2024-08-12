@@ -2,13 +2,13 @@
 
 using namespace ble;
 
-InterfaceProxy::InterfaceProxy(GDBusProxy *proxy)
+DBusInterfaceProxy::DBusInterfaceProxy(GDBusProxy *proxy)
     : _proxy(proxy)
 {
     g_object_ref(_proxy);
 }
 
-InterfaceProxy::~InterfaceProxy()
+DBusInterfaceProxy::~DBusInterfaceProxy()
 {
     g_object_unref(_proxy);
 }

@@ -27,7 +27,7 @@ Bluez::~Bluez()
 
 void Bluez::initObjects()
 {
-    std::vector<std::shared_ptr<ObjectProxy>> objects = _manager.GetManagedObjects();
+    std::vector<std::shared_ptr<DBusObjectProxy>> objects = _manager.GetManagedObjects();
     for (auto proxy : objects)
     {
         g_print("adding object: %s\n", proxy->GetObjectPath().c_str());

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ble/dbus/InterfaceProxy.hpp"
+#include "ble/dbus/DBusInterfaceProxy.hpp"
 
 #include <gio/gio.h>
 
@@ -11,14 +11,14 @@
 
 namespace ble
 {
-    class ObjectProxy
+    class DBusObjectProxy
     {
     public:
-        ObjectProxy(const std::string &path);
-        ObjectProxy(GDBusObjectProxy *proxy);
-        virtual ~ObjectProxy();
+        DBusObjectProxy(const std::string &path);
+        DBusObjectProxy(GDBusObjectProxy *proxy);
+        virtual ~DBusObjectProxy();
 
-        void AddChild(std::shared_ptr<ObjectProxy> proxy);
+        void AddChild(std::shared_ptr<DBusObjectProxy> proxy);
 
         std::string GetObjectPath();
 
@@ -34,9 +34,11 @@ namespace ble
         // Object 路径
         std::string _path;
         // 包含的接口
-        std::map<std::string, std::shared_ptr<InterfaceProxy>> _interfaces;
+        std::map<std::string, std::shared_ptr<DBusInterfaceProxy>> _interfaces;
         // 子节点
-        std::map<std::string, std::shared_ptr<ObjectProxy>> _children;
+        std::map<std::string, std::shared_ptr<DBusObjectProxy>> _children;
         std::mutex _children_mutex;
     };
+
+    typedef std::shared_ptr<DBusObjectProxy> DBusObjectProxyPtr;
 }

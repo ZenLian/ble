@@ -6,23 +6,23 @@
 
 using namespace ble;
 
-ObjectProxy::ObjectProxy(const std::string &path)
+DBusObjectProxy::DBusObjectProxy(const std::string &path)
     : _path(path)
 {
     // 空结点，没有对应 _proxy，但可以添加子结点
 }
 
-ObjectProxy::ObjectProxy(GDBusObjectProxy *proxy)
+DBusObjectProxy::DBusObjectProxy(GDBusObjectProxy *proxy)
 {
     loadProxy(proxy);
 }
 
-ObjectProxy::~ObjectProxy()
+DBusObjectProxy::~DBusObjectProxy()
 {
     unloadProxy();
 }
 
-void ObjectProxy::loadProxy(GDBusObjectProxy *proxy)
+void DBusObjectProxy::loadProxy(GDBusObjectProxy *proxy)
 {
     g_object_ref(proxy);
     unloadProxy();
@@ -39,13 +39,13 @@ void ObjectProxy::loadProxy(GDBusObjectProxy *proxy)
     //     GDBusProxy *interface = G_DBUS_PROXY(item->data);
     //     std::string name(g_dbus_proxy_get_interface_name(interface));
     //     g_print("- %s\n", name.c_str());
-    //     _interfaces[name] = std::make_shared<InterfaceProxy>(interface);
+    //     _interfaces[name] = std::make_shared<DBusInterfaceProxy>(interface);
     // }
     // g_list_free_full(interfaces, g_object_unref);
     // g_print("[InitProxy] over.\n");
 }
 
-void ObjectProxy::unloadProxy()
+void DBusObjectProxy::unloadProxy()
 {
     if (_proxy != nullptr)
     {
@@ -54,7 +54,7 @@ void ObjectProxy::unloadProxy()
     }
 }
 
-void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
+void DBusObjectProxy::AddChild(std::shared_ptr<DBusObjectProxy> proxy)
 {
     std::string path(proxy->_path);
     // 不属于本结点，不予处理
@@ -85,7 +85,7 @@ void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
     // 不是直接子结点，递归给子结点处理
     // 寻找可以处理这个路径的子结点
     auto iter = std::find_if(_children.begin(), _children.end(),
-                             [&path](const std::pair<std::string, std::shared_ptr<ObjectProxy>> &child_data) -> bool
+                             [&path](const std::pair<std::string, std::shared_ptr<DBusObjectProxy>> &child_data) -> bool
                              {
                                  return PathUtils::IsDescendantOf(path, child_data.first);
                              });
@@ -100,24 +100,24 @@ void ObjectProxy::AddChild(std::shared_ptr<ObjectProxy> proxy)
     {
         std::string child_path = PathUtils::NextChild(_path, path);
         g_print("creating empty child and forward: %s\n", child_path.c_str());
-        auto child = std::make_shared<ObjectProxy>(child_path);
+        auto child = std::make_shared<DBusObjectProxy>(child_path);
         _children[child_path] = child;
         onChildCreated(child_path);
         child->AddChild(proxy);
     }
 }
 
-std::string ObjectProxy::GetObjectPath()
+std::string DBusObjectProxy::GetObjectPath()
 {
     return _path;
 }
 
-void ObjectProxy::onChildCreated(const std::string &path)
+void DBusObjectProxy::onChildCreated(const std::string &path)
 {
     g_print("[NEW] %s\n", path.c_str());
 }
 
-void ObjectProxy::Print()
+void DBusObjectProxy::Print()
 {
     g_print("%s\n", this->_path.c_str());
     for (auto interface : this->_interfaces)
