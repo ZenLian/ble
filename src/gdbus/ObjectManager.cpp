@@ -1,5 +1,8 @@
 #include "ble/gdbus/ObjectManager.hpp"
 
+#include "ble/gdbus/ObjectProxy.hpp"
+#include "ble/gdbus/InterfaceProxy.hpp"
+
 #include <stdexcept>
 
 using namespace ble::gdbus;
@@ -32,7 +35,7 @@ void on_interface_added(
 )
 {
     ObjectManager* manager = static_cast<ObjectManager*>(user_data);
-    manager->handleInterfaceAdded(object, interface);
+    manager->handleInterfaceAdded(interface);
 }
 
 void on_interface_removed(
@@ -43,7 +46,19 @@ void on_interface_removed(
 )
 {
     ObjectManager* manager = static_cast<ObjectManager*>(user_data);
-    manager->handleInterfaceRemoved(object, interface);
+    manager->handleInterfaceRemoved(interface);
+}
+
+void on_interface_proxy_properties_changed(
+    GDBusObjectManagerClient* self,
+    GDBusObjectProxy* object_proxy,
+    GDBusProxy* interface_proxy,
+    GVariant* changed_properties,
+    char** invalidated_properties,
+    gpointer user_data)
+{
+    ObjectManager* manager = static_cast<ObjectManager*>(user_data);
+    manager->handleInterfaceProxyPropertiesChanged(interface_proxy, changed_properties, invalidated_properties);
 }
 
 }
@@ -52,6 +67,7 @@ ObjectManager::ObjectManager(const std::string& name, const std::string& path)
 {
     GError* error = NULL;
 
+    g_print("Creating ObjectManager...\n");
     _manager = g_dbus_object_manager_client_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
         G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
         name.c_str(),
@@ -64,8 +80,12 @@ ObjectManager::ObjectManager(const std::string& name, const std::string& path)
         throw std::runtime_error("");
     }
 
+    g_print("Connecting g_signals...\n");
     g_signal_connect(_manager, "object-added", G_CALLBACK(on_object_added), this);
     g_signal_connect(_manager, "object-removed", G_CALLBACK(on_object_removed), this);
+    g_signal_connect(_manager, "interface-added", G_CALLBACK(on_interface_added), this);
+    g_signal_connect(_manager, "interface-removed", G_CALLBACK(on_interface_removed), this);
+    g_signal_connect(_manager, "interface-proxy-properties-changed", G_CALLBACK(on_interface_proxy_properties_changed), this);
 
 }
 
@@ -94,8 +114,7 @@ std::vector<ObjectProxyPtr> ObjectManager::GetManagedObjects()
 void ObjectManager::handleObjectAdded(GDBusObject* object)
 {
     g_print("[NEW] %s\n", g_dbus_object_get_object_path(object));
-    if (OnObjectAdded)
-    {
+    if (OnObjectAdded) {
         OnObjectAdded(std::make_shared<ObjectProxy>(G_DBUS_OBJECT_PROXY(object)));
     }
 }
@@ -103,13 +122,29 @@ void ObjectManager::handleObjectAdded(GDBusObject* object)
 void ObjectManager::handleObjectRemoved(GDBusObject* object)
 {
     g_print("[DEL] %s\n", g_dbus_object_get_object_path(object));
-    if (OnObjectRemoved)
-    {
+    if (OnObjectRemoved) {
         OnObjectRemoved(std::make_shared<ObjectProxy>(G_DBUS_OBJECT_PROXY(object)));
     }
 }
 
-void ObjectManager::handleInterfaceAdded(GDBusObject* object, GDBusInterface* interface)
+void ObjectManager::handleInterfaceAdded(GDBusInterface* interface)
 {
-    // TODO:
+    if (OnInterfaceAdded) {
+        OnInterfaceAdded(std::make_shared<InterfaceProxy>(G_DBUS_PROXY(interface)));
+    }
+}
+
+void ObjectManager::handleInterfaceRemoved(GDBusInterface* interface)
+{
+    if (OnInterfaceRemoved) {
+        OnInterfaceRemoved(std::make_shared<InterfaceProxy>(G_DBUS_PROXY(interface)));
+    }
+}
+
+void ObjectManager::handleInterfaceProxyPropertiesChanged(GDBusProxy* interface_proxy, GVariant* changed_properties,
+    char** invalidated_properties)
+{
+    if (OnInterfaceProxyPropertiesChanged) {
+        OnInterfaceProxyPropertiesChanged(std::make_shared<InterfaceProxy>(interface_proxy), changed_properties, invalidated_properties);
+    }
 }

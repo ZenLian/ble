@@ -1,20 +1,23 @@
 #include "ble/api/Manager.hpp"
 
+#include "ble/api/Adapter.hpp"
 #include "ble/ManagerPrivate.hpp"
+
+#include <algorithm>
 
 using namespace ble;
 
 Manager::Manager()
     : _p(new ManagerPrivate(this))
 {
-    
+    printf("Manager created.\n");
 }
 
 Manager::~Manager() = default;
 
-void Manager::Init()
+void Manager::Run()
 {
-    _p->Init();
+    _p->run();
 }
 
 AdapterPtr Manager::GetDefaultAdapter() const
@@ -24,12 +27,17 @@ AdapterPtr Manager::GetDefaultAdapter() const
 
 std::vector<AdapterPtr> Manager::GetAdapters() const
 {
-    return _p->_adapters;
+    std::vector<AdapterPtr> result;
+    for (auto it : _p->_adapters) {
+        result.push_back(it.second);
+    }
+    return result;
 }
 
-AdapterPtr Manager::GetAdapterByAddress(const std::string &address) const
+AdapterPtr Manager::GetAdapterByAddress(const std::string& address) const
 {
-    for (AdapterPtr adapter : _p->_adapters) {
+    for (auto it : _p->_adapters) {
+        AdapterPtr adapter = it.second;
         if (adapter->address() == address) {
             return adapter;
         }
@@ -37,9 +45,10 @@ AdapterPtr Manager::GetAdapterByAddress(const std::string &address) const
     return AdapterPtr();
 }
 
-AdapterPtr Manager::GetAdapterByPath(const std::string &path) const
+AdapterPtr Manager::GetAdapterByPath(const std::string& path) const
 {
-    for (AdapterPtr adapter : _p->_adapters) {
+    for (auto it : _p->_adapters) {
+        AdapterPtr adapter = it.second;
         if (adapter->path() == path) {
             return adapter;
         }

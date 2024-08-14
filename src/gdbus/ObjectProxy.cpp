@@ -1,12 +1,14 @@
 #include "ble/gdbus/ObjectProxy.hpp"
+#include "ble/gdbus/InterfaceProxy.hpp"
 
 #include <algorithm>
 
 using namespace ble::gdbus;
 
 ObjectProxy::ObjectProxy(GDBusObjectProxy* proxy)
-    :_proxy(g_object_ref(proxy))
+    :_proxy(proxy)
 {
+    g_object_ref(proxy);
 }
 
 ObjectProxy::~ObjectProxy()

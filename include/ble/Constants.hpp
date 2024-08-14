@@ -2,13 +2,30 @@
 
 namespace ble
 {
-struct Constants
+class Constants
 {
-    static const char* DBusBase = "org.freedesktop.DBus";
+public:
+    Constants();
 
-    static const char* BluezBase = "org.bluez";
-    static const char* BluezAdapter = "org.bluez.Adapter1";
-    static const char* BluezDevice = "org.bluez.Device1";
+    static const char* DBusBase()
+    {
+        return "org.freedesktop.DBus";
+    }
+
+    static const char* BluezBase()
+    {
+        return "org.bluez";
+    }
+
+    static const char* BluezAdpter()
+    {
+        return "org.bluez.Adapter1";
+    }
+
+    static const char* BluezDevice()
+    {
+        return "org.bluez.Device1";
+    }
 };
 
 } // namespace ble

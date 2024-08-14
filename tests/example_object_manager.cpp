@@ -79,9 +79,10 @@ void on_interface_proxy_properties_changed(
     char** invalidated_properties,
     gpointer user_data)
 {
+    const gchar* interface_name = g_dbus_proxy_get_interface_name(interface_proxy);
     g_print("== call %s\n", __func__);
     g_print("object: %s\n", g_dbus_object_get_object_path(G_DBUS_OBJECT(object_proxy)));
-    g_print("interface: %s\n", g_dbus_proxy_get_interface_name(interface_proxy));
+    g_print("interface: %s\n", interface_name);
     g_print("changed properties:\n");
 
     GVariantIter iter;
@@ -91,8 +92,15 @@ void on_interface_proxy_properties_changed(
     while (g_variant_iter_next(&iter, "{&sv}", &key, &value))
     {
         gchar* s = g_variant_print(value, TRUE);
-        g_print("  %s -> %s\n", key, s);
+        g_print("  %s -> %s", key, s);
         g_variant_unref(value);
+        g_free(s);
+
+        // NOTE: cached property 也会实时更新
+        GVariant* cached = g_dbus_proxy_get_cached_property(interface_proxy, key);
+        s = g_variant_print(cached, TRUE);
+        g_print("        [CACHED] %s\n", s);
+        g_variant_unref(cached);
         g_free(s);
     }
 }

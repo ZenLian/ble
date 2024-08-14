@@ -1,3 +1,4 @@
 add_library(blecpp
-    dbus/InterfaceProxy.cpp dbus/ObjectProxy.cpp dbus/ObjectManager.cpp
-    bluez/Bluez.cpp)
+    gdbus/InterfaceProxy.cpp gdbus/ObjectProxy.cpp gdbus/ObjectManager.cpp
+    api/Adapter.cpp api/Manager.cpp
+    AdapterPrivate.cpp ManagerPrivate.cpp)
