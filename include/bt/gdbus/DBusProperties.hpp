@@ -1,10 +1,10 @@
 #pragma once
 
-namespace ble::gdbus
+namespace bt::glib
 {
 class Properties
 {
 public:
     Properties();
 };
-} // namespace ble::gdbus
+} // namespace bt::glib

@@ -5,7 +5,7 @@
 #include <algorithm>
 
 // NOTE: 假定所有函数的输入都是合法的 Object Path
-namespace ble::PathUtils
+namespace bt::PathUtils
 {
     // "/org/bluez/hci0" -> {"org", "bluez", "hci0"}
     inline std::vector<std::string> Split(const std::string &path)

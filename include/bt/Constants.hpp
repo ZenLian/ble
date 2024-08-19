@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ble
+namespace bt
 {
 class Constants
 {
@@ -28,4 +28,4 @@ public:
     }
 };
 
-} // namespace ble
+} // namespace bt

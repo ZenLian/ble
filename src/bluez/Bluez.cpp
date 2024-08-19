@@ -1,10 +1,10 @@
-#include "ble/bluez/Bluez.hpp"
+#include "bt/bluez/Bluez.hpp"
 
-#include "ble/dbus/ObjectManager.hpp"
+#include "bt/dbus/ObjectManager.hpp"
 
 #include <stdexcept>
 
-using namespace ble;
+using namespace bt;
 
 Bluez::Bluez()
     : _manager("org.bluez", "/"),

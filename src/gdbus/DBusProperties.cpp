@@ -1,11 +1,11 @@
-#include "ble/gdbus/DBusProperties.hpp"
+#include "bt/gdbus/DBusProperties.hpp"
 
 #include <gio/gio.h>
 
-namespace ble::gdbus
+namespace bt::glib
 {
 Properties::Properties()
 {
 
 }
-} // namespace ble::gdbus
+} // namespace bt::glib

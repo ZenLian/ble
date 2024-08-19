@@ -1,8 +1,10 @@
-#include "ble/AdapterPrivate.hpp"
+#include "bt/AdapterPrivate.hpp"
 
-#include "ble/gdbus/InterfaceProxy.hpp"
+#include "bt/api/Adapter.hpp"
+#include "bt/api/Device.hpp"
+#include "bt/gdbus/InterfaceProxy.hpp"
 
-namespace ble
+namespace bt
 {
 AdapterPrivate::AdapterPrivate(Adapter* adapter)
     : _a(adapter)
@@ -14,9 +16,41 @@ AdapterPrivate::~AdapterPrivate()
 {
 }
 
-void AdapterPrivate::loadProxy(gdbus::InterfaceProxyPtr proxy)
+void AdapterPrivate::loadProxy(glib::InterfaceProxyPtr proxy)
 {
     _proxy = proxy;
+}
+
+void AdapterPrivate::addDevice(glib::InterfaceProxyPtr interface)
+{
+    DevicePtr device = std::make_shared<Device>();
+    // TODO: loadProxy
+    // device->loadProxy(interface)
+
+    _devices.insert({ interface->GetObjectPath(), device });
+
+    // 触发 DeviceAdded 信号
+    if (_a->OnDeviceAdded) {
+        _a->OnDeviceAdded(device);
+    }
+}
+
+void AdapterPrivate::removeDevice(glib::InterfaceProxyPtr interface)
+{
+    // find Device
+    std::string path = interface->GetObjectPath();
+    auto it = _devices.find(path);
+    if (it == _devices.end()) {
+        return;
+    }
+    DevicePtr device = it->second;
+
+    _devices.erase(path);
+
+    // 触发 DeviceRemoved 信号
+    if (_a->OnDeviceRemoved) {
+        _a->OnDeviceRemoved(device);
+    }
 }
 
 std::string AdapterPrivate::path()
@@ -76,7 +110,23 @@ void AdapterPrivate::setDiscoverable(bool discoverable)
     _proxy->SetProperty("Discoverable", value);
 }
 
-void AdapterPrivate::propertiesChanged(gdbus::InterfaceProxyPtr interface, GVariant* changed_properties)
+void AdapterPrivate::interfaceAdded(glib::InterfaceProxyPtr interface)
+{
+    if (interface->GetInterfaceName() == "org.bluez.Device1") {
+        // TODO: addDevice
+        addDevice(interface);
+    }
+}
+
+void AdapterPrivate::interfaceRemoved(glib::InterfaceProxyPtr interface)
+{
+    if (interface->GetInterfaceName() == "org.bluez.Device1") {
+        // TODO: removeDevice
+        removeDevice(interface);
+    }
+}
+
+void AdapterPrivate::propertiesChanged(glib::InterfaceProxyPtr interface, GVariant* changed_properties)
 {
     if (interface->GetInterfaceName() != "org.bluez.Adapter1") {
         return;
@@ -85,4 +135,4 @@ void AdapterPrivate::propertiesChanged(gdbus::InterfaceProxyPtr interface, GVari
     g_print("[CHG] powered: %s\n", isPowered() ? "true" : "false");
 }
 
-} // namespace ble
+} // namespace bt

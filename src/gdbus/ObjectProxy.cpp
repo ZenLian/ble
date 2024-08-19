@@ -1,9 +1,9 @@
-#include "ble/gdbus/ObjectProxy.hpp"
-#include "ble/gdbus/InterfaceProxy.hpp"
+#include "bt/gdbus/ObjectProxy.hpp"
+#include "bt/gdbus/InterfaceProxy.hpp"
 
 #include <algorithm>
 
-using namespace ble::gdbus;
+using namespace bt::glib;
 
 ObjectProxy::ObjectProxy(GDBusObjectProxy* proxy)
     :_proxy(proxy)

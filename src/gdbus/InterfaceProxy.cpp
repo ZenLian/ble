@@ -1,6 +1,6 @@
-#include "ble/gdbus/InterfaceProxy.hpp"
+#include "bt/gdbus/InterfaceProxy.hpp"
 
-using namespace ble::gdbus;
+using namespace bt::glib;
 
 InterfaceProxy::InterfaceProxy(GDBusProxy* proxy)
     : _proxy(proxy)

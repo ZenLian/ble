@@ -1,6 +1,6 @@
-#include "ble/bluez/Bluez.hpp"
+#include "bt/bluez/Bluez.hpp"
 
-using namespace ble;
+using namespace bt;
 
 int main()
 {

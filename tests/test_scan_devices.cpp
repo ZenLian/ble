@@ -18,5 +18,9 @@ int main()
     g_print("  address: %s\n", adapter->address().c_str());
     g_print("  powered: %s\n", adapter->isPowered() ? "true" : "false");
 
+    adapter->OnDeviceAdded = [](DevicePtr device){
+        printf("[NEW] %s\n", device->address());
+    };
+
     manager.Run();
 }

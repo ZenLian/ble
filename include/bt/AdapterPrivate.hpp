@@ -1,12 +1,13 @@
 #pragma once
 
-#include "ble/types.hpp"
-#include "ble/gdbus/types.hpp"
+#include "bt/types.hpp"
+#include "bt/gdbus/types.hpp"
 #include <gio/gio.h>
 #include <vector>
 #include <string>
+#include <map>
 
-namespace ble
+namespace bt
 {
 class AdapterPrivate
 {
@@ -14,7 +15,10 @@ public:
     explicit AdapterPrivate(Adapter* adapter);
     virtual ~AdapterPrivate();
 
-    void loadProxy(gdbus::InterfaceProxyPtr proxy);
+    void loadProxy(glib::InterfaceProxyPtr proxy);
+
+    void addDevice(glib::InterfaceProxyPtr interface);
+    void removeDevice(glib::InterfaceProxyPtr interface);
 
     std::string path();
 
@@ -34,13 +38,16 @@ public:
     // bool isDiscovering() const;
     // std::vector<std::string> uuids();
 
-    /** SIGNALS */
-    void propertiesChanged(gdbus::InterfaceProxyPtr interface, GVariant* changed_properties);
+    /** 处理 SIGNALS，由 Manager 触发 */
+    void interfaceAdded(glib::InterfaceProxyPtr interface);
+    void interfaceRemoved(glib::InterfaceProxyPtr interface);
+    void propertiesChanged(glib::InterfaceProxyPtr interface, GVariant* changed_properties);
 
     Adapter* _a;
 
-    gdbus::InterfaceProxyPtr _proxy;
-    // gdbus::Properties* _propertiesProxy;
+    glib::InterfaceProxyPtr _proxy;
+
+    std::map<std::string, DevicePtr> _devices;
 };
 
-} // namespace ble
+} // namespace bt

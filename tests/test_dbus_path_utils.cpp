@@ -1,8 +1,8 @@
-#include "ble/dbus/PathUtils.hpp"
+#include "bt/dbus/PathUtils.hpp"
 
 #include "test.hpp"
 
-using namespace ble::PathUtils;
+using namespace bt::PathUtils;
 
 void test_ascendant()
 {

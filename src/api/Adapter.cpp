@@ -1,8 +1,8 @@
-#include "ble/api/Adapter.hpp"
+#include "bt/api/Adapter.hpp"
 
-#include "ble/AdapterPrivate.hpp"
+#include "bt/AdapterPrivate.hpp"
 
-namespace ble
+namespace bt
 {
 
 Adapter::Adapter()
@@ -38,4 +38,4 @@ void Adapter::setPowered(bool powered)
     return _p->setPowered(powered);
 }
 
-} // namespace ble
+} // namespace bt

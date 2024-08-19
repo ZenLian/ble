@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ble/gdbus/types.hpp"
+#include "bt/gdbus/types.hpp"
 
 #include <gio/gio.h>
 #include <string>
 
-namespace ble::gdbus
+namespace bt::glib
 {
 class InterfaceProxy
 {

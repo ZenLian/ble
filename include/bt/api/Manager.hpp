@@ -1,15 +1,15 @@
 #pragma once
 
-#include "ble/types.hpp"
+#include "bt/types.hpp"
 
 #include <memory>
 #include <vector>
 #include <functional>
 
-namespace ble
+namespace bt
 {
 /**
- * @class ble::Manager
+ * @class bt::Manager
  *
  * 对外 API 的顶层入口。
  */
@@ -67,4 +67,4 @@ private:
 
     friend class ManagerPrivate;
 };
-} // namespace ble
+} // namespace bt

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ble/gdbus/types.hpp"
+#include "bt/gdbus/types.hpp"
 
 #include <functional>
 #include <gio/gio.h>
@@ -8,9 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace ble
-{
-namespace gdbus
+namespace bt::glib
 {
 class ObjectManager
 {
@@ -37,5 +35,4 @@ public:
 private:
     GDBusObjectManager* _manager;
 };
-}
-} // namespace ble
+} // namespace bt

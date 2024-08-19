@@ -1,11 +1,11 @@
-#include "ble/gdbus/ObjectManager.hpp"
+#include "bt/gdbus/ObjectManager.hpp"
 
-#include "ble/gdbus/ObjectProxy.hpp"
-#include "ble/gdbus/InterfaceProxy.hpp"
+#include "bt/gdbus/ObjectProxy.hpp"
+#include "bt/gdbus/InterfaceProxy.hpp"
 
 #include <stdexcept>
 
-using namespace ble::gdbus;
+using namespace bt::glib;
 
 namespace
 {
@@ -68,7 +68,8 @@ ObjectManager::ObjectManager(const std::string& name, const std::string& path)
     GError* error = NULL;
 
     g_print("Creating ObjectManager...\n");
-    _manager = g_dbus_object_manager_client_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+    _manager = g_dbus_object_manager_client_new_for_bus_sync(
+        G_BUS_TYPE_SYSTEM,
         G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
         name.c_str(),
         path.c_str(),

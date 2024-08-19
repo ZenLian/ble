@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ble/gdbus/types.hpp"
+#include "bt/gdbus/types.hpp"
 
 #include <gio/gio.h>
 
@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 
-namespace ble
+namespace bt
 {
-namespace gdbus
+namespace glib
 {
 
 class ObjectProxy
@@ -28,5 +28,5 @@ protected:
     GDBusObjectProxy* _proxy;
 }; // class ObjectProxy
 
-} // namespace gdbus
-} // namespace ble
+} // namespace glib
+} // namespace bt

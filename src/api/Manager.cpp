@@ -1,11 +1,11 @@
-#include "ble/api/Manager.hpp"
+#include "bt/api/Manager.hpp"
 
-#include "ble/api/Adapter.hpp"
-#include "ble/ManagerPrivate.hpp"
+#include "bt/api/Adapter.hpp"
+#include "bt/ManagerPrivate.hpp"
 
 #include <algorithm>
 
-using namespace ble;
+using namespace bt;
 
 Manager::Manager()
     : _p(new ManagerPrivate(this))

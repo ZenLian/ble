@@ -1,9 +1,9 @@
 #pragma once
-#include "ble/dbus/ObjectManager.hpp"
-#include "ble/dbus/ObjectProxy.hpp"
+#include "bt/dbus/ObjectManager.hpp"
+#include "bt/dbus/ObjectProxy.hpp"
 #include <gio/gio.h>
 
-namespace ble
+namespace bt
 {
 class Bluez
 {

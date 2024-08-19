@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace ble::gdbus
+namespace bt::glib
 {
 class ObjectProxy;
 class InterfaceProxy;
