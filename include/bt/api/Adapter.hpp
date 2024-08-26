@@ -21,7 +21,7 @@ public:
     bool isPowered() const;
     void setPowered(bool powered);
 
-    std::vector<DevicePtr> devices() const;
+    std::vector<DevicePtr> getDevices() const;
 
     /** 事件回调 */
     std::function<void(DevicePtr)> OnDeviceAdded;

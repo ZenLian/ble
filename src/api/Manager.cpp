@@ -49,7 +49,7 @@ AdapterPtr Manager::getAdapterByPath(const std::string& path) const
 {
     for (auto it : _impl->_adapters) {
         AdapterPtr adapter = it.second;
-        if (adapter->path() == Path) {
+        if (adapter->path() == path) {
             return adapter;
         }
     }

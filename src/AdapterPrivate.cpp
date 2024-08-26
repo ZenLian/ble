@@ -29,7 +29,7 @@ void AdapterPrivate::addDevice(glib::InterfaceProxyPtr interface)
     // TODO: loadProxy
     // device->loadProxy(interface)
 
-    _devices.push_back(device);
+    _devices.insert({interface->GetObjectPath(), device});
 
     // 触发 DeviceAdded 信号
     if (_a->OnDeviceAdded) {
