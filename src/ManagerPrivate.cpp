@@ -34,15 +34,15 @@ ManagerPrivate::ManagerPrivate(Manager* manager)
 
 ManagerPrivate::~ManagerPrivate()
 {
-    if (_loop.IsRunning())
-        _loop.Quit();
+    if (_loop.isRunning())
+        _loop.quit();
     delete _objectManager;
 }
 
 void ManagerPrivate::run()
 {
     printf("main loop running...\n");
-    _loop.Run();
+    _loop.run();
 }
 
 void ManagerPrivate::manageObjects()
@@ -82,7 +82,7 @@ void ManagerPrivate::interfaceAdded(glib::InterfaceProxyPtr interface)
     for (auto it : _adapters) {
         if (it.first == path || PathUtils::IsAscendantOf(it.first, path)) {
             // 交给 Adapter 处理
-            it.second->_p->interfaceAdded(interface);
+            it.second->_impl->interfaceAdded(interface);
         }
     }
 }
@@ -100,7 +100,7 @@ void ManagerPrivate::interfaceRemoved(glib::InterfaceProxyPtr interface)
     for (auto it : _adapters) {
         if (it.first == path || PathUtils::IsAscendantOf(it.first, path)) {
             // 交给 Adapter 处理
-            it.second->_p->interfaceRemoved(interface);
+            it.second->_impl->interfaceRemoved(interface);
         }
     }
 }
@@ -112,7 +112,7 @@ void ManagerPrivate::propertiesChanged(glib::InterfaceProxyPtr interface, GVaria
     for (auto it : _adapters) {
         if (it.first == path || PathUtils::IsAscendantOf(it.first, path)) {
             // TODO: 交给 Adapter 处理
-            it.second->_p->propertiesChanged(interface, changed_properties);
+            it.second->_impl->propertiesChanged(interface, changed_properties);
         }
     }
 }
@@ -120,7 +120,7 @@ void ManagerPrivate::propertiesChanged(glib::InterfaceProxyPtr interface, GVaria
 void ManagerPrivate::addAdapter(glib::InterfaceProxyPtr interface)
 {
     AdapterPtr adapter = std::make_shared<Adapter>();
-    adapter->_p->loadProxy(interface);
+    adapter->_impl->loadProxy(interface);
     _adapters.insert({ interface->GetObjectPath(), adapter });
 
     if (!_defaultAdapter) {

@@ -8,35 +8,35 @@
 using namespace bt;
 
 Manager::Manager()
-    : _p(new ManagerPrivate(this))
+    : _impl(new ManagerPrivate(this))
 {
     printf("Manager created.\n");
 }
 
 Manager::~Manager() = default;
 
-void Manager::Run()
+void Manager::run()
 {
-    _p->run();
+    _impl->run();
 }
 
-AdapterPtr Manager::GetDefaultAdapter() const
+AdapterPtr Manager::getDefaultAdapter() const
 {
-    return _p->_defaultAdapter;
+    return _impl->_defaultAdapter;
 }
 
-std::vector<AdapterPtr> Manager::GetAdapters() const
+std::vector<AdapterPtr> Manager::getAdapters() const
 {
     std::vector<AdapterPtr> result;
-    for (auto it : _p->_adapters) {
+    for (auto it : _impl->_adapters) {
         result.push_back(it.second);
     }
     return result;
 }
 
-AdapterPtr Manager::GetAdapterByAddress(const std::string& address) const
+AdapterPtr Manager::getAdapterByAddress(const std::string& address) const
 {
-    for (auto it : _p->_adapters) {
+    for (auto it : _impl->_adapters) {
         AdapterPtr adapter = it.second;
         if (adapter->address() == address) {
             return adapter;
@@ -45,11 +45,11 @@ AdapterPtr Manager::GetAdapterByAddress(const std::string& address) const
     return AdapterPtr();
 }
 
-AdapterPtr Manager::GetAdapterByPath(const std::string& path) const
+AdapterPtr Manager::getAdapterByPath(const std::string& path) const
 {
-    for (auto it : _p->_adapters) {
+    for (auto it : _impl->_adapters) {
         AdapterPtr adapter = it.second;
-        if (adapter->path() == path) {
+        if (adapter->path() == Path) {
             return adapter;
         }
     }

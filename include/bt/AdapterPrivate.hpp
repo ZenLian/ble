@@ -26,11 +26,11 @@ public:
     std::string address() const;
     std::string name() const;
     std::string alias() const;
-    // void setAlias(const std::string& alias);
-    bool isPowered() const;
-    void setPowered(bool powered);
-    bool isDiscoverable() const;
-    void setDiscoverable(bool discoverable);
+    void alias(const std::string& alias);
+    bool powered() const;
+    void powered(bool powered);
+    bool discoverable() const;
+    void discoverable(bool discoverable);
     // uint32_t discoverableTimeout() const;
     // void setDiscoverableTimeout();
     // bool isPairable() const;

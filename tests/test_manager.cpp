@@ -11,12 +11,12 @@ int main()
     Manager manager;
 
     g_print("[TEST] get adapter...\n");
-    AdapterPtr adapter = manager.GetDefaultAdapter();
+    AdapterPtr adapter = manager.getDefaultAdapter();
     adapter->setPowered(true);
 
     g_print("%s\n", adapter->path().c_str());
     g_print("  address: %s\n", adapter->address().c_str());
     g_print("  powered: %s\n", adapter->isPowered() ? "true" : "false");
 
-    manager.Run();
+    manager.run();
 }

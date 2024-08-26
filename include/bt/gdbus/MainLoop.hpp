@@ -7,9 +7,9 @@ class MainLoop
 public:
     MainLoop();
     ~MainLoop();
-    void Run();
-    void Quit();
-    bool IsRunning();
+    void run();
+    void quit();
+    bool isRunning();
 private:
     GMainLoop *_loop;
 };

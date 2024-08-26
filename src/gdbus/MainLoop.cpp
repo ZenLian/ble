@@ -15,17 +15,17 @@ MainLoop::~MainLoop()
     }
 }
 
-void MainLoop::Run()
+void MainLoop::run()
 {
     g_main_loop_run(_loop);
 }
 
-void MainLoop::Quit()
+void MainLoop::quit()
 {
     g_main_loop_quit(_loop);
 }
 
-bool MainLoop::IsRunning()
+bool MainLoop::isRunning()
 {
     return g_main_loop_is_running(_loop);
 }

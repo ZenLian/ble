@@ -13,20 +13,22 @@ public:
     Adapter();
     virtual ~Adapter();
 
-    std::string path();
+    std::string path() const;
 
-    std::string address();
-    std::string name();
-    bool isPowered();
+    std::string address() const;
+    std::string name() const;
+    void setName(const std::string& name);
+    bool isPowered() const;
     void setPowered(bool powered);
+
+    std::vector<DevicePtr> devices() const;
 
     /** 事件回调 */
     std::function<void(DevicePtr)> OnDeviceAdded;
     std::function<void(DevicePtr)> OnDeviceRemoved;
 
-
 private:
-    std::unique_ptr<class AdapterPrivate> const _p;
+    std::unique_ptr<class AdapterPrivate> const _impl;
 
     friend class AdapterPrivate;
     friend class ManagerPrivate;

@@ -11,7 +11,7 @@ public:
     Bluez();
     virtual ~Bluez();
 
-    void Run();
+    void run();
 
 private:
     void initObjects();

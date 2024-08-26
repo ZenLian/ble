@@ -24,21 +24,21 @@ public:
      *
      * 创建一个单独的线程以监听 DBus 事件，所有回调都在该线程中执行。
      */
-    void Run();
+    void run();
 
     /**
      * @brief 返回任意一个可用的 Adapter。
      *
      * @return AdapterPtr
      */
-    AdapterPtr GetDefaultAdapter() const;
+    AdapterPtr getDefaultAdapter() const;
 
     /**
      * @brief 返回所有 Adapters
      *
      * @return std::vector<AdapterPtr>
      */
-    std::vector<AdapterPtr> GetAdapters() const;
+    std::vector<AdapterPtr> getAdapters() const;
 
     /**
      * @brief 根据 mac 地址返回 Adapter
@@ -46,7 +46,7 @@ public:
      * @param address Adapter 的地址（如 "12:34:56:78:90:AB"）
      * @return 无对应 Adapter 时返回 NULL
      */
-    AdapterPtr GetAdapterByAddress(const std::string& address) const;
+    AdapterPtr getAdapterByAddress(const std::string& address) const;
 
     /**
      * @brief 根据 DBus 路径返回 Adapter
@@ -54,7 +54,7 @@ public:
      * @param path DBus 路径（如 "/org/bluez/hci0"）
      * @return 无对应 Adapter 时返回 NULL
      */
-    AdapterPtr GetAdapterByPath(const std::string& path) const;
+    AdapterPtr getAdapterByPath(const std::string& path) const;
 
     /** 事件回调 */
     std::function<void(AdapterPtr)> OnAdapterAdded;
@@ -63,7 +63,7 @@ public:
 
 
 private:
-    std::unique_ptr<class ManagerPrivate> const _p;
+    std::unique_ptr<class ManagerPrivate> const _impl;
 
     friend class ManagerPrivate;
 };

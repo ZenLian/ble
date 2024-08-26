@@ -6,36 +6,41 @@ namespace bt
 {
 
 Adapter::Adapter()
-    : _p(new AdapterPrivate(this))
+    : _impl(new AdapterPrivate(this))
 {
 
 }
 
 Adapter::~Adapter() = default;
 
-std::string Adapter::path()
+std::string Adapter::path() const
 {
-    return _p->path();
+    return _impl->path();
 }
 
-std::string Adapter::address()
+std::string Adapter::address() const
 {
-    return _p->address();
+    return _impl->address();
 }
 
-std::string Adapter::name()
+std::string Adapter::name() const
 {
-    return _p->name();
+    return _impl->alias();
 }
 
-bool Adapter::isPowered()
+void Adapter::setName(const std::string& name)
 {
-    return _p->isPowered();
+    return _impl->alias(name);
+}
+
+bool Adapter::isPowered() const
+{
+    return _impl->isPowered();
 }
 
 void Adapter::setPowered(bool powered)
 {
-    return _p->setPowered(powered);
+    return _impl->setPowered(powered);
 }
 
 } // namespace bt

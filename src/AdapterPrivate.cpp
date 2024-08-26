@@ -4,6 +4,8 @@
 #include "bt/api/Device.hpp"
 #include "bt/gdbus/InterfaceProxy.hpp"
 
+#include <algorithm>
+
 namespace bt
 {
 AdapterPrivate::AdapterPrivate(Adapter* adapter)
@@ -27,7 +29,7 @@ void AdapterPrivate::addDevice(glib::InterfaceProxyPtr interface)
     // TODO: loadProxy
     // device->loadProxy(interface)
 
-    _devices.insert({ interface->GetObjectPath(), device });
+    _devices.push_back(device);
 
     // 触发 DeviceAdded 信号
     if (_a->OnDeviceAdded) {
@@ -82,7 +84,13 @@ std::string AdapterPrivate::alias() const
     return result;
 }
 
-bool AdapterPrivate::isPowered() const
+void AdapterPrivate::alias(const std::string& alias)
+{
+    GVariant* value = g_variant_new("s", alias.c_str());
+    _proxy->SetProperty("Alias", value);
+}
+
+bool AdapterPrivate::powered() const
 {
     GVariant* v = _proxy->GetProperty("Powered");
     gboolean powered = g_variant_get_boolean(v);
@@ -90,13 +98,13 @@ bool AdapterPrivate::isPowered() const
     return powered;
 }
 
-void AdapterPrivate::setPowered(bool powered)
+void AdapterPrivate::powered(bool powered)
 {
     GVariant* value = g_variant_new("b", powered);
     _proxy->SetProperty("Powered", value);
 }
 
-bool AdapterPrivate::isDiscoverable() const
+bool AdapterPrivate::discoverable() const
 {
     GVariant* value = _proxy->GetProperty("Discoverable");
     gboolean result(g_variant_get_boolean(value));
@@ -104,7 +112,7 @@ bool AdapterPrivate::isDiscoverable() const
     return result;
 }
 
-void AdapterPrivate::setDiscoverable(bool discoverable)
+void AdapterPrivate::discoverable(bool discoverable)
 {
     GVariant* value = g_variant_new("b", discoverable);
     _proxy->SetProperty("Discoverable", value);

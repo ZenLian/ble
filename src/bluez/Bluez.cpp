@@ -40,7 +40,7 @@ void Bluez::printObjects()
     _rootProxy.Print();
 }
 
-void Bluez::Run()
+void Bluez::run()
 {
     printObjects();
     g_print("running main loop...\n");
