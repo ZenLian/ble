@@ -81,6 +81,8 @@ class SerialPortProfile(Profile):
     def OnReadReady(self, fd, condition):
         buf = os.read(fd, 100)
         print("[READ]%s" % (buf.decode(),))
+        os.write(fd, buf)
+        GLib.io_add_watch(self.fd, GLib.IO_IN, self.OnReadReady)
 
 
 if __name__ == '__main__':
