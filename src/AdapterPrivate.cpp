@@ -29,7 +29,7 @@ void AdapterPrivate::addDevice(glib::InterfaceProxyPtr interface)
     // TODO: loadProxy
     // device->loadProxy(interface)
 
-    _devices.insert({interface->GetObjectPath(), device});
+    _devices.insert({ interface->GetObjectPath(), device });
 
     // 触发 DeviceAdded 信号
     if (_a->OnDeviceAdded) {
@@ -140,7 +140,7 @@ void AdapterPrivate::propertiesChanged(glib::InterfaceProxyPtr interface, GVaria
         return;
     }
 
-    g_print("[CHG] powered: %s\n", isPowered() ? "true" : "false");
+    g_print("[CHG] powered: %s\n", powered() ? "true" : "false");
 }
 
 } // namespace bt
