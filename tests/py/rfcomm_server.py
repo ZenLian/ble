@@ -49,7 +49,7 @@ class Profile(dbus.service.Object):
                 in_signature="oha{sv}", out_signature="")
     def NewConnection(self, path, fd, properties):
         self.fd = fd.take()
-        print("[Profile] NewConnection(%s, %d)" % (path, self.fd))
+        print("[Profile] NewConnection(%s, %d, %s)" % (path, self.fd, properties))
         for key in properties.keys():
             if key == "Version" or key == "Features":
                 print("  %s = 0x%04x" % (key, properties[key]))

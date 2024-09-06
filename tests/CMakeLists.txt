@@ -12,5 +12,5 @@ add_executable(example_rfcomm_server example_rfcomm_server.cpp)
 # add_executable(test_bluez test_bluez.cpp)
 # target_link_libraries(test_bluez blecpp)
 
-add_executable(test_manager test_manager.cpp)
-target_link_libraries(test_manager blecpp)
+# add_executable(test_manager test_manager.cpp)
+# target_link_libraries(test_manager blecpp)
