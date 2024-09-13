@@ -7,6 +7,7 @@ include_directories(
     /usr/include/libmount
     /usr/include/blkid
     /usr/include/glib-2.0
+    /usr/include/gio-unix-2.0
     /usr/lib/x86_64-linux-gnu/glib-2.0/include)
 link_libraries(-lgio-2.0 -lgobject-2.0 -lglib-2.0)
 

@@ -1,4 +1,5 @@
 #include <gio/gio.h>
+#include <gio/gunixfdmessage.h>
 #include <stdexcept>
 
 class SerialPortProfile
@@ -14,6 +15,29 @@ public:
 private:
     const gchar* _path;
 };
+
+static gboolean handle_channel_read(
+    GIOChannel* channel,
+    GIOCondition  condition,
+    gpointer      data)
+{
+    gchar buf[128];
+    gsize count = 0;
+    g_io_channel_read_chars(channel, buf, 128, &count, NULL);
+    g_print("[recv %ld chars]: ", count);
+    for (gsize i = 0; i < count; i++) {
+        g_print("%c", buf[i]);
+    }
+    g_print("\n");
+
+    g_print("sending %ld chars...\n", count);
+    g_io_channel_write_chars(channel, buf, count, NULL, NULL);
+    g_io_channel_flush(channel, NULL);
+    g_io_add_watch_full(channel, 1, G_IO_IN, handle_channel_read, NULL, NULL);
+
+    g_print("return\n");
+    return false; // 返回 false 会移除 channel 监听
+}
 
 static void handle_method_call(GDBusConnection* bus,
     const gchar* sender,
@@ -43,12 +67,21 @@ static void handle_method_call(GDBusConnection* bus,
         g_print("[NewConnection]: %s\n", s);
         g_free(s);
 
-        const gchar* device;
+        // fd 不能从 GVariant 参数里直接取到，必须用 GUnixFDList 取！
+        GUnixFDList* fd_list;
         gint32 fd;
-        g_variant_get(parameters, "(&oha{sv})", &device, &fd, NULL);
-        g_print("device: %s, fd: %d\n", device, fd);
+        GDBusMessage* message;
+        message = g_dbus_method_invocation_get_message(invocation);
+        fd_list = g_dbus_message_get_unix_fd_list(message);
+        fd = g_unix_fd_list_get(fd_list, 0, NULL);
+        g_print("fd: %d\n", fd);
         const gchar* greeting = "hello!";
         write(fd, greeting, strlen(greeting));
+
+        // 监听 fd
+        GIOChannel* channel = g_io_channel_unix_new(fd);
+        g_io_add_watch_full(channel, 1, G_IO_IN, handle_channel_read, NULL, NULL);
+
         g_dbus_method_invocation_return_value(invocation, NULL);
     }
     else if (g_str_equal(method_name, "RequestDisconnection")) {
